@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;board_dao&apos; to &apos;chap09_board_dao&apos;" description="Rename resource &apos;board_dao&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/board_dao" name="chap09_board_dao" stamp="1662374585987" updateReferences="true"/>
+</session>

@@ -1,0 +1,90 @@
+package com.jjang051.front;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.jjang051.controller.AbstractController;
+import com.jjang051.util.ScriptWriter;
+
+// .do로 끝나는 모든 url을 받아서 처리하겠다.
+@WebServlet("*.do")
+public class FrontController extends HttpServlet {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+
+		// ModelAndView(spring에 있는 것 - 잊어도 상관은 없다)두가지를 한번에 처리해준다
+		ModelAndView mav = null;
+		
+		// context - 파일 업로드시에도 사용한적 있음
+		// command뽑아내기 위한 ex) / == BoardList.do 를 뽑기위한 명령어들
+		String context = request.getContextPath();
+		String uri = request.getRequestURI(); // 전체 요청주소....
+		String command = uri.substring(context.length());
+		// http://localhost:8090/mybatis/BoardList.do - 전체가 uri - context는 http://localhost:8090/mybatis 이다
+
+		/*
+		 * System.out.println("전체주소==="+request.getRequestURL().toString());
+		 * System.out.println("http://localhost:8090를 제외한 전체주소==="+uri);
+		 * System.out.println("지금 돌아가고 있는 context==="+context);
+		 * System.out.println("command==="+command);
+		 */
+		System.out.println("command==="+command);
+		
+		
+		// view를 mapping해주기위한 접두어 접미어 생성
+		ViewResolver viewResolver = new ViewResolver();
+		viewResolver.setPrefix("/WEB-INF/"); // 접두어
+		viewResolver.setSuffix(".jsp"); // 접미어
+
+		// HandlerMapping에서 controller(값) 얻어오기
+		HandlerMapping mappings = new HandlerMapping();
+		AbstractController controller = null;
+		controller = mappings.getController(command);
+
+		mav = controller.requestHandler(request, response);
+		String tempPage = mav.getNextPage();  //   두가지 케이스가 넘어온다.    board/list    or   BoardList.do
+		String nextPage = null;
+		System.out.println("tempPage==="+tempPage);
+		
+		if(tempPage.contains(".do")) {
+			nextPage =  tempPage;
+		} else {
+			nextPage = viewResolver.getViewPage(tempPage);
+		}
+		
+		// 데이터를 싣기...
+		Map<String, Object> model = mav.getModel();
+		for (String key : model.keySet()) {
+			request.setAttribute(key, model.get(key));
+			// System.out.println("key==="+key+":"+model.get(key));
+		}
+		
+		String alertMsg =  (String) model.get("alertMsg");
+		String backMsg =  (String) model.get("backMsg");
+		
+		System.out.println("alertMsg==="+alertMsg);
+		System.out.println("backMsg==="+backMsg);
+		
+		
+		//String nextPage = viewResolver.getViewPage(tempPage);
+		// System.out.println("tempPage==="+tempPage);
+		// System.out.println("nextPage==="+nextPage);
+		if(alertMsg!=null) {
+			ScriptWriter.alertAndNext(response, alertMsg, nextPage);
+		} else if(backMsg!=null) {
+			ScriptWriter.alertAndBack(response, backMsg);
+		} else {
+			RequestDispatcher dispatcher = request.getRequestDispatcher(nextPage);
+			dispatcher.forward(request, response);
+		}
+	}
+}

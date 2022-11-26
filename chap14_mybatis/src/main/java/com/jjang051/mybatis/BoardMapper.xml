@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjang051.mybatis.board">
+<!--namespace - id값이 중첩이 일어날 수 있어서(다른 Mapper에서)설정해 둔것 -> 만약 id값이 member와 중첩된다면 dao에서 부를때 namespace도 같이 써야한다  -->
+	<insert id="insertBoard" parameterType="ReplyBoardDto">
+		INSERT INTO REPLY_BOARD VALUES (SEQ_REPLYBOARD.NEXTVAL,
+										#{subject},
+										#{name},
+										#{email},
+										#{password},
+										sysdate,
+										#{reGroup},
+										#{reStep},
+										#{reLevel},
+										0,
+										#{contents},
+										#{id}
+										)
+	</insert>
+	
+	<select id="getAllList" resultType="ReplyBoardDto" parameterType="HashMap">
+		<!-- 
+			<![CDATA[
+				SELECT * FROM 
+					(SELECT ROWNUM AS NUM,B.* FROM 
+						(SELECT * FROM REPLY_BOARD ORDER BY REGROUP DESC, RELEVEL ASC) B
+					) 
+				WHERE NUM >= #{start} AND NUM <= #{end}
+			]]>
+			'<![CDATA[>=' : 이렇게 사용하면 특수 문자를 사용할 수 있다(xml에서) -> 전체 또는 낱개로 사용할 수 있다
+		 -->	
+		 <!-- 동적 쿼리 searchList함께 사용 -->
+		SELECT * FROM 
+			(SELECT ROWNUM AS NUM,B.* FROM 
+				(SELECT * FROM REPLY_BOARD
+					<if test="searchWord!=null and searchWord!=''" >
+						WHERE ${searchSelect}  LIKE  '%' || #{searchWord} || '%'
+					</if> 
+					ORDER BY REGROUP DESC, RELEVEL ASC
+				) B
+			) 
+		WHERE NUM <![CDATA[>=]]> #{start} AND NUM <![CDATA[<=]]> #{end}
+		<!-- WHERE NUM BETWEEN #{start} AND #{end} 로도 사용 가능 -->
+	</select>
+	
+	<!-- SearchList에서 사용할 쿼리  -->
+	<!--  마이바티스에서 컬럼명을 변수로 받아야 할때는 $을 쓴다. #{abc} : 문자열,  ${abc} : 필드명 사용시-->
+	<select id="getSearchAllList" resultType="ReplyBoardDto" parameterType="HashMap">
+		SELECT * FROM REPLY_BOARD 
+		WHERE ${searchSelect}  LIKE  '%' || #{searchWord} || '%'  ORDER BY REGROUP DESC, RELEVEL ASC
+		<!-- '%' || #{searchWord} || '%' : 연결할때 사용하는 법 --> 
+	</select>
+	
+	<!-- view에서 사용할 것 -->
+	<select id="getSelectOne" parameterType="Integer" resultType="ReplYBoardDto">
+		SELECT * FROM REPLY_BOARD WHERE NO = #{no}
+	</select>
+	
+	<!--Hit 증가 시킬 쿼리 - update는 무조건 integer이기 때문에 resultType 생략 -->
+	<update id="updateHit" parameterType="Integer">
+		UPDATE REPLY_BOARD SET HIT = HIT + 1 WHERE NO = #{no}
+	</update>
+	
+	<!--view에서 사용할 이전글 다음글 쿼리 -->
+	<select id="getNextSelect"  parameterType="Integer" resultType="ReplYBoardDto">
+		SELECT * FROM 
+			(SELECT ROWNUM AS NUM,B.* FROM 
+				(SELECT * FROM REPLY_BOARD ORDER BY REGROUP DESC, RELEVEL ASC) B ) 
+		WHERE NUM = #{num} + 1
+	</select>	
+	<select id="getPrevSelect"  parameterType="Integer" resultType="ReplYBoardDto">
+		SELECT * FROM 
+			(SELECT ROWNUM AS NUM,B.* FROM 
+				(SELECT * FROM REPLY_BOARD ORDER BY REGROUP DESC, RELEVEL ASC) B ) 
+		WHERE NUM = #{num} - 1
+	</select>
+	
+	<!-- 삭제시 사용 -->
+	<delete id="deleteBoard" parameterType="ReplyBoardDto">
+		DELETE FROM REPLY_BOARD WHERE NO = #{no} AND PASSWORD = #{password}
+	</delete>
+	
+	<!-- select에서 사용할 regroup사용을 위해  -->
+	<select id="getMaxReGroup" resultType="Integer">
+		SELECT NVL(MAX(REGROUP),1) AS REGROUPMAX FROM REPLY_BOARD
+		<!--NVL - 설정한 1 - null값이 떨어질 경우 1로 처리해라  -->
+	</select>
+	
+	<!--검색시 사용 - 전체 갯수 찾기  -->
+	<select id="getTotal" resultType="Integer" parameterType="HashMap">
+		SELECT COUNT(*) AS TOTAL FROM REPLY_BOARD
+		<if test="searchWord!=null and searchWord!=''" >
+		<!--searchWord 함꼐 사용시  -->
+			WHERE ${searchSelect}  LIKE  '%' || #{searchWord} || '%'
+		</if> 
+	</select>
+	<update id="updateReLevel" parameterType="ReplyBoardDto">
+		UPDATE REPLY_BOARD SET RELEVEL = RELEVEL + 1 
+		WHERE REGROUP = #{reGroup} AND 
+		RELEVEL  <![CDATA[ > ]]> #{reLevel}
+	</update>
+	<!-- <select id="getSearchTotal" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL FROM REPLY_BOARD
+	</select> -->
+</mapper>

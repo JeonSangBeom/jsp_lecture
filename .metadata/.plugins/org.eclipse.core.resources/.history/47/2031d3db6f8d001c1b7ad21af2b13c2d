@@ -1,0 +1,31 @@
+package com.jjang051.model;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+
+//DataBaseAccessObject
+public class MemberDao {
+	public List<MemberDto> getAllMemberList() {
+		List<MemberDto> memberList = null;
+		SqlSession sqlSession = MyBatisConnectionFactory.getSqlSession(); //연결됨....
+		memberList = sqlSession.selectList("getAllMemberList"); //List형태로 들고오기...
+		sqlSession.close();
+		return memberList;
+	}
+}
+
+
+
+
+
+
+
+
+

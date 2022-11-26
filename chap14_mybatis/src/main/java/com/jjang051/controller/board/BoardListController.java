@@ -1,0 +1,78 @@
+package com.jjang051.controller.board;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.jjang051.model.ReplyBoardDao;
+import com.jjang051.model.ReplyBoardDto;
+import com.jjang051.util.PageWriter;
+
+@WebServlet("/board/BoardList.do")
+public class BoardListController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    public BoardListController() {
+        super();
+    }
+    //searchList와 List 함께 사용하는 법
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		ReplyBoardDao replyBoardDao = new ReplyBoardDao();
+		String tempClickPage = request.getParameter("clickPage");
+		String search_select = request.getParameter("search_select");
+		String search_word = request.getParameter("search_word");
+		if(search_select==null || search_select=="") search_select="";
+		if(search_word==null || search_word=="") search_word="";
+		if(tempClickPage==null) {
+			tempClickPage = "1";
+		}
+		int clickPage = Integer.parseInt(tempClickPage);
+		
+		int totalPage = replyBoardDao.getTotal(search_select,search_word); //db에 저장되어 있는 페이지 갯수
+		
+		
+		int listPerPage = 5;// 나오는 값
+		int pageBlock = 3; //페이지 갯수 아래 보여지는 값
+		
+		//다음 페이지 갈떄 처음 나오게될 페이지
+		int start = (clickPage-1)*listPerPage+1;
+		int end = start+listPerPage -1 ;
+		
+		
+		List<ReplyBoardDto> boardList = replyBoardDao.getAllList(start,end,search_select,search_word);
+		request.setAttribute("boardList", boardList);
+		//페이지 관련 속성들
+		//int total,int listPerPage, int pageBlock, int clickPage, String requsetURL
+		String page="";
+		if(search_word!=null && search_word!="") {
+			page = PageWriter.pageWrite(totalPage, listPerPage, pageBlock, clickPage, 
+					"../board/BoardList.do?search_select="+search_select+"&search_word="+search_word);
+		} else {
+			page = PageWriter.pageWrite(totalPage, listPerPage, pageBlock, clickPage, "../board/BoardList.do");
+		}
+		request.setAttribute("page",page);
+		request.setAttribute("totalPage",totalPage);
+		
+		
+		//WEB-INF 경로는 브라우저에서 접근 불가능....
+		//Spring은 WEb-INF밑에 views라는 폴더를 만들어 놓고 쓴다.
+		//view Resolver를 통해서 prefix랑 suffix를 통해 파일의 경로는 만들어 쓴다.
+		RequestDispatcher dispatcher = 
+				request.getRequestDispatcher("/WEB-INF/board/board_list.jsp");
+		dispatcher.forward(request, response);
+	}
+}
+
+//
+
+
+
+

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--DOCTYPE config와 다르기 때문에 잘 찾아와서 써야 한다  -->
+<mapper namespace="com.jjang051.mybatis.member">
+	<!-- 여기다가 select / insert / delete / upadte  -->
+	
+	<!-- 전체 멤머 들고 오기 -->
+	<select id="getAllMember" resultType="MemberDto" parameterType="MemberDto">
+		SELECT * FROM MEMBER
+	</select>
+	
+	<!-- 멤버 한명 들고 오기 -->
+	<select id="getSelectOne" resultType="MemberDto" parameterType="String">
+		SELECT * FROM MEMBER WHERE ID = #{id}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="insertMemberM" parameterType="MemberDto">
+		INSERT INTO MEMBER VALUES (SEQ_MEMBER.NEXTVAL,
+								   #{id},
+								   #{password},
+								   #{name},
+								   #{email},
+								   #{phone},
+								   #{zipCode},
+								   #{address},
+								   SYSDATE
+								  )
+	</insert>
+	
+	<!-- idCheck 같은 아이디가 있는지 체크 -->
+	<select id="idCheck" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL FROM MEMBER WHERE ID = #{id}
+	</select>
+	
+	<!-- login -->
+	<select id="getLoggedMember" parameterType="MemberDto" resultType="MemberDto">
+		SELECT * FROM MEMBER WHERE ID = #{id} AND PASSWORD = #{password}
+	</select>
+	
+	<!-- delete -->
+	<delete id="deleteMember" parameterType="MemberDto">
+		DELETE FROM MEMBER WHERE ID = #{id} AND PASSWORD = #{password}
+	</delete>
+	
+	<!-- update -->
+	<update id="updateMember" parameterType="MemberDto">
+		UPDATE MEMBER SET   NAME = #{name},
+		                  	EMAIL = #{email},
+		                  	PHONE = #{phone},
+		                  	ZIPCODE = #{zipCode},
+		                  	ADDRESS = #{address}
+		                  	WHERE ID = #{id} AND PASSWORD = #{password}
+		                  	
+	</update>
+	
+</mapper>
+

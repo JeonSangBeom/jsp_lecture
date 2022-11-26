@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="java.lang.Integer"/>
+    <fullyQualifiedTypeName name="java.io.PrintWriter"/>
+    <fullyQualifiedTypeName name="javax.security.auth.message.callback.PrivateKeyCallback.Request"/>
+    <fullyQualifiedTypeName name="javax.servlet.RequestDispatcher"/>
+    <fullyQualifiedTypeName name="com.jjang051.model.BoardDao"/>
+    <fullyQualifiedTypeName name="com.jjang051.model.BoardDto"/>
+    <fullyQualifiedTypeName name="com.jjang051.util.ScriptWriter"/>
+    <fullyQualifiedTypeName name="com.jjang051.jdbc.JDBCConnection"/>
+    <fullyQualifiedTypeName name="java.lang.Math"/>
+</qualifiedTypeNameHistroy>

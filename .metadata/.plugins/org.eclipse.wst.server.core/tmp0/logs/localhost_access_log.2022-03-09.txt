@@ -1,0 +1,15 @@
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:22:38 +0900] "GET /reply_board_model2/List.do HTTP/1.1" 404 837
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:22:49 +0900] "GET /reply_board_model2/View.do?no=29&num=1 HTTP/1.1" 200 9117
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:22:56 +0900] "GET /reply_board_model2/BoardList.do?clickPage=3 HTTP/1.1" 200 5529
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:22:58 +0900] "GET /reply_board_model2/View.do?no=2&num=14 HTTP/1.1" 200 9110
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:26:13 +0900] "GET /reply_board_model2/Write.do HTTP/1.1" 200 10664
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:53 +0900] "GET /reply_board_model2/Write.do HTTP/1.1" 200 10672
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:53 +0900] "GET /reply_board_model2/js/jquery-3.6.0.min.js HTTP/1.1" 200 89501
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:53 +0900] "GET /reply_board_model2/summernote/summernote.min.js HTTP/1.1" 200 151092
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:53 +0900] "GET /reply_board_model2/css/reset.css HTTP/1.1" 200 1104
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:53 +0900] "GET /reply_board_model2/css/layout.css HTTP/1.1" 200 1657
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:53 +0900] "GET /reply_board_model2/css/form.css HTTP/1.1" 200 6851
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:53 +0900] "GET /reply_board_model2/summernote/summernote.min.css HTTP/1.1" 200 19266
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:53 +0900] "GET /reply_board_model2/js/main.js HTTP/1.1" 200 -
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:53 +0900] "GET /reply_board_model2/summernote/font/summernote.woff2 HTTP/1.1" 200 6156
+0:0:0:0:0:0:0:1 - - [09/Mar/2022:14:27:54 +0900] "GET /favicon.ico HTTP/1.1" 404 818

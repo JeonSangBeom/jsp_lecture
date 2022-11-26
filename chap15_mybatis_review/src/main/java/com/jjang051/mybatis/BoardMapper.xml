@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjang051.mybatis.board">
+	<select id="getAllBoard" resultType="ReplyBoardDto">
+		SELECT * FROM REPLY_BOARD
+	</select>
+	
+	
+	<select id="getSelectOneBoard" resultType="ReplyBoardDto" parameterType="Integer">
+		SELECT * FROM REPLY_BOARD WHERE NO = #{no}
+	</select>
+	
+	<delete id="deleteBoard" parameterType="ReplyBoardDto">
+		DELETE FROM REPLY_BOARD WHERE NO = #{no} AND PASSWORD= #{password}
+	</delete>
+	
+	<delete id="allDeleteBoard" parameterType="Integer">
+		DELETE FROM REPLY_BOARD WHERE NO = #{no}
+	</delete>
+
+</mapper>

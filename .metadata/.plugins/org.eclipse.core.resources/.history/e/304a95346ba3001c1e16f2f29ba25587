@@ -1,0 +1,63 @@
+package com.jjang051.controller;
+
+import java.io.IOException;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.jjang051.model.FileDao;
+import com.jjang051.model.FileDto;
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+@WebServlet("/Visual.do")
+public class VisualController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public VisualController() {
+        super();
+    }
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8");
+		
+		FileDto  fileDto = new FileDto();
+		
+		String savePath = "upload_visual";
+		ServletContext context = this.getServletContext();
+		String realPath = context.getRealPath(savePath);
+		int fileSize = 1024*1024*50; // 파일 용량 제한
+		String encoding = "UTF-8";
+		DefaultFileRenamePolicy filePolicy = new DefaultFileRenamePolicy(); // 다른 사람이 같은 파일을 올렸을때 이름바꾸기...
+		
+		//MultipartRequest multipartRequest = new MultipartRequest(request,파일 저장되는 장소,파일사이즈,인코딩, 파일 중복처리)
+		MultipartRequest multipartRequest = new MultipartRequest(request,realPath,fileSize,encoding, filePolicy);
+		fileDto.setContents01(multipartRequest.getParameter("contents01"));
+		fileDto.setContents02(multipartRequest.getParameter("contents02"));
+		fileDto.setVisual(multipartRequest.getOriginalFileName("visual"));  //aa.jpg
+		fileDto.setRealVisual(multipartRequest.getFilesystemName("visual")); //aa01.jpg
+		
+		FileDao visualDao = new FileDao();
+		int result = visualDao.insertVisual(fileDto);
+		if(result>0) {
+			//입력되었다.
+			response.sendRedirect("Main.do");
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
